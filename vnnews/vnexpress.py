@@ -43,7 +43,7 @@ def get_article_content(url, s=0):
             return title
 
     else:
-        title = soup.find('h1',attrs={"class":"title_news_detail"}).string
+        title = soup.find('h1',attrs={"class":"title_news_detail"}).text
 
         if soup.find_all('p',attrs={"class":"Normal"}):
             content_array = soup.find_all('p',attrs={"class":"Normal"})
@@ -53,19 +53,18 @@ def get_article_content(url, s=0):
                 content.append(ct.text)
             text = listToString(content)
 
-            if soup.find('p',attrs={"class":"description"}):
-                description = soup.find('p',attrs={"class":"description"})
-                return (title + "\n" + description.text + "\n" + text)
-
             if soup.find('span',attrs={"class":"location-stamp"}):
                 location = soup.find('span',attrs={"class":"location-stamp"})
                 description = location.next_sibling # Description after location span tag
-                return (title + "\n" + location.text + "\n" + description + "\n" + text)
+                return (title+ "\n" + location.string + "\n" + description + "\n" + text)
             else:
-                return (title + "\n" + text)
+                if soup.find('p',attrs={"class":"description"}):
+                    description = soup.find('p',attrs={"class":"description"})
+                    return (title + "\n" + description.text + "\n" + text)
+                else:
+                    return (title + "\n" + text)
         else:
             return title
-
 
 def thoisu():
     data = get_article_content(const.VNEXPRESS_THOISU)
